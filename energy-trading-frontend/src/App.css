@@ -1,0 +1,24 @@
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+}
+
+.token-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.token-card .card-body {
+  flex: 1;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+}

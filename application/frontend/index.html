@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Energy Trading DApp</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔋 Energy Trading Platform</h1>
+
+        <div class="actions">
+            <button onclick="toggleForm('createTokenForm')">➕ Create Token</button>
+            <button onclick="toggleForm('transferForm')">🔁 Transfer Token</button>
+            <button onclick="loadTokens()">📜 Show All Tokens</button>
+        </div>
+
+        <form id="createTokenForm" class="hidden">
+            <h2>Create Token</h2>
+            <input type="text" name="id" placeholder="Token ID" required />
+            <input type="text" name="owner" placeholder="Owner" required />
+            <input type="text" name="producer" placeholder="Producer" required />
+            <input type="number" name="energyAmount" placeholder="Energy Amount (kWh)" required />
+            <input type="number" name="price" placeholder="Price ($)" required />
+            <input type="text" name="sourceType" placeholder="Source Type" required />
+            <select name="forSale">
+                <option value="true">For Sale</option>
+                <option value="false">Not For Sale</option>
+            </select>
+            <select name="certifiedGreen">
+                <option value="true">Certified Green</option>
+                <option value="false">Not Certified</option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+
+        <form id="transferForm" class="hidden">
+            <h2>Transfer Token</h2>
+            <input type="text" name="id" placeholder="Token ID" required />
+            <input type="text" name="newOwner" placeholder="New Owner" required />
+            <button type="submit">Transfer</button>
+        </form>
+
+        <section id="tokenSection">
+            <h2>All Tokens</h2>
+            <div id="tokens"></div>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
