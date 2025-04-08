@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Energy Trading Platform</title>
+    <style>
+        :root {
+            --primary: #2a9d8f;
+            --secondary: #e9c46a;
+            --dark: #264653;
+            --danger: #e76f51;
+            --success: #43aa8b;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--dark);
+        }
+        
+        .token-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .token-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .token-source {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .source-solar {
+            background-color: #ffd166;
+            color: #333;
+        }
+        
+        .source-wind {
+            background-color: #06d6a0;
+            color: white;
+        }
+        
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .token-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .token-header {
+            background-color: var(--dark);
+            color: white;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+        
+        .token-body {
+            padding: 15px;
+        }
+        
+        .token-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .token-footer {
+            padding: 15px;
+            text-align: right;
+            border-top: 1px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .system-diagram {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .diagram-box {
+            display: inline-block;
+            width: 180px;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .producers {
+            background-color: #8ecae6;
+            color: #333;
+        }
+        
+        .blockchain {
+            background-color: #219ebc;
+        }
+        
+        .consumers {
+            background-color: #fb8500;
+        }
+        
+        .arrow {
+            display: inline-block;
+            width: 50px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">Energy Chain ⚡ Trading Platform</div>
+            <div>
+                <button class="btn btn-secondary">Connect Wallet</button>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" id="tab-architecture">Architecture</div>
+            <div class="tab" id="tab-marketplace">Marketplace</div>
+            <div class="tab" id="tab-meters">Smart Meters</div>
+            <div class="tab" id="tab-analytics">Analytics</div>
+        </div>
+        
+        <!-- Architecture Section -->
+        <div id="section-architecture">
+            <div class="card">
+                <div class="card-header">System Architecture</div>
+                <div class="card-content">
+                    <div class="system-diagram">
+                        <div class="diagram-box producers">Energy Producers</div>
+                        <span class="arrow">→</span>
+                        <div class="diagram-box blockchain">Hyperledger Fabric</div>
+                        <span class="arrow">→</span>
+                        <div class="diagram-box consumers">Energy Consumers</div>
+                    </div>
+                    <p>
+                        This high-level architecture diagram shows how energy producers, consumers, and validators interact through
+                        the blockchain network. Smart meters capture production and consumption data, which is recorded on the
+                        Hyperledger Fabric blockchain using smart contracts. Validators use a Proof of Authority consensus mechanism
+                        to verify transactions, while oracles provide external data verification.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Smart Contracts & Business Logic</div>
+                <div class="card-content">
+                    <h4>Key Smart Contract Functions</h4>
+                    <ul>
+                        <li><strong>CreateToken</strong>: Issues new energy tokens based on verified production</li>
+                        <li><strong>TransferToken</strong>: Transfers token ownership between accounts</li>
+                        <li><strong>GetAllTokens</strong>: Retrieves all tokens from the ledger</li>
+                        <li><strong>ReadToken</strong>: Retrieves a specific token's details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Marketplace Section -->
+        <div id="section-marketplace" style="display: none;">
+            <div class="card">
+                <div class="card-header">Energy Token Marketplace</div>
+                <div class="card-content">
+                    <p>Browse available energy tokens from various producers:</p>
+                    
+                    <div class="token-grid">
+                        <div class="token-card">
+                            <div class="token-header">Token #token1</div>
+                            <div class="token-body">
+                                <div class="token-detail">
+                                    <span>Energy:</span>
+                                    <span>5.5 kWh</span>
+                                </div>
+                                <div class="token-detail">
+                                    <span>Source:</span>
+                                    <span class="token-source source-solar">Solar</span>
+                                </div>
+                                <div class="token-detail">
+                                    <span>Producer:</span>
+                                    <span>solarfarm1</span>
+                                </div>
+                                <div class="token-detail">
+                                    <span>Price:</span>
+                                    <span>$2.20</span>
+                                </div>
+                            </div>
+                            <div class="token-footer">
+                                <button class="btn btn-secondary">Purchase Token</button>
+                            </div>
+                        </div>
+                        
+                        <div class="token-card">
+                            <div class="token-header">Token #token2</div>
+                            <div class="token-body">
+                                <div class="token-detail">
+                                    <span>Energy:</span>
+                                    <span>3.0 kWh</span>
+                                </div>
+                                <div class="token-detail">
+                                    <span>Source:</span>
+                                    <span class="token-source source-wind">Wind</span>
+                                </div>
+                                <div class="token-detail">
+                                    <span>Producer:</span>
+                                    <span>windfarm1</span>
+                                </div>
+                                <div class="token-detail">
+                                    <span>Price:</span>
+                                    <span>$1.50</span>
+                                </div>
+                            </div>
+                            <div class="token-footer">
+                                <button class="btn btn-secondary">Purchase Token</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Smart Meters Section -->
+        <div id="section-meters" style="display: none;">
+            <div class="card">
+                <div class="card-header">Smart Meter Simulation</div>
+                <div class="card-content">
+                    <p>Connect to smart meters and generate energy production readings:</p>
+                    
+                    <div style="margin-top: 20px;">
+                        <label for="meter-select">Select Smart Meter:</label>
+                        <select id="meter-select" style="margin-left: 10px; padding: 5px;">
+                            <option value="solar-farm-001">solar-farm-001 (Solar - California)</option>
+                            <option value="wind-farm-001">wind-farm-001 (Wind - Texas)</option>
+                            <option value="solar-farm-002">solar-farm-002 (Solar - Arizona)</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-secondary">Generate Reading</button>
+                        <button class="btn btn-secondary" style="margin-left: 10px;">Verify & Create Token</button>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">Recent Readings</h4>
+                    <div class="token-list">
+                        <div class="token-item">
+                            <div>
+                                <strong>Energy:</strong> 5.8 kWh
+                            </div>
+                            <div>
+                                <small>2025-04-08 18:30:00</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Section -->
+        <div id="section-analytics" style="display: none;">
+            <div class="card">
+                <div class="card-header">Energy Production Analytics</div>
+                <div class="card-content">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 0 5px;">
+                            <div>Total Production</div>
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">15.7 kWh</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 0 5px;">
+                            <div>Active Tokens</div>
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">3</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 0 5px;">
+                            <div>Average Price</div>
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">$2.17</div>
+                        </div>
+                    </div>
+                    
+                    <p>Energy production by source:</p>
+                    <ul>
+                        <li>Solar: 8.5 kWh (54%)</li>
+                        <li>Wind: 3.0 kWh (19%)</li>
+                        <li>Hydro: 4.2 kWh (27%)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple tab navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = {
+                'tab-architecture': document.getElementById('section-architecture'),
+                'tab-marketplace': document.getElementById('section-marketplace'),
+                'tab-meters': document.getElementById('section-meters'),
+                'tab-analytics': document.getElementById('section-analytics')
+            };
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all sections
+                    Object.values(sections).forEach(section => {
+                        if (section) section.style.display = 'none';
+                    });
+                    
+                    // Show the selected section
+                    const sectionId = this.id.replace('tab-', 'section-');
+                    const section = document.getElementById(sectionId);
+                    if (section) section.style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

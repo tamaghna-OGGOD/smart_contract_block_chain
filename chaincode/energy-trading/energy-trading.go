@@ -220,6 +220,75 @@ func (s *SmartContract) GetTokensByOwner(ctx contractapi.TransactionContextInter
 	return ownerTokens, nil
 }
 
+// VerifyEnergySource verifies if the energy source is legitimate
+func (s *SmartContract) VerifyEnergySource(ctx contractapi.TransactionContextInterface, tokenID string, verificationData string) error {
+	token, err := s.ReadToken(ctx, tokenID)
+	if err != nil {
+		return err
+	}
+	
+	// In a real implementation, this would validate against oracle data
+	// For now, just mark it as verified
+	token.CertifiedGreen = true
+	
+	tokenJSON, err := json.Marshal(token)
+	if err != nil {
+		return err
+	}
+	
+	return ctx.GetStub().PutState(tokenID, tokenJSON)
+}
+
+// CreateBatchTokens creates multiple energy tokens at once (for bulk energy production)
+func (s *SmartContract) CreateBatchTokens(ctx contractapi.TransactionContextInterface, tokensJSON string) error {
+	var tokens []EnergyToken
+	err := json.Unmarshal([]byte(tokensJSON), &tokens)
+	if err != nil {
+		return err
+	}
+	
+	for _, token := range tokens {
+		tokenJSON, err := json.Marshal(token)
+		if err != nil {
+			return err
+		}
+		
+		err = ctx.GetStub().PutState(token.ID, tokenJSON)
+		if err != nil {
+			return err
+		}
+	}
+	
+	return nil
+}
+
+// ApplyTariffRules applies local regulatory tariff rules to a token
+func (s *SmartContract) ApplyTariffRules(ctx contractapi.TransactionContextInterface, tokenID string) error {
+	token, err := s.ReadToken(ctx, tokenID)
+	if err != nil {
+		return err
+	}
+	
+	// Apply tariff rules based on source type and certification
+	// This is a simplified example - actual rules would be more complex
+	if token.CertifiedGreen {
+		// Apply green energy incentive
+		token.Price = token.Price * 1.1 // 10% premium for green energy
+	}
+	
+	// Ensure price doesn't go below minimum allowed
+	if token.Price < 0.5 {
+		token.Price = 0.5 // Example minimum price floor
+	}
+	
+	tokenJSON, err := json.Marshal(token)
+	if err != nil {
+		return err
+	}
+	
+	return ctx.GetStub().PutState(tokenID, tokenJSON)
+}
+
 func main() {
 	chaincode, err := contractapi.NewChaincode(&SmartContract{})
 	if err != nil {

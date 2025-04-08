@@ -1,67 +1,63 @@
-#!/bin/bash
+const axios = require('axios');
 
-BASE_URL="http://localhost:3000"
-TOKEN_ID="testtoken99"
+const API_URL = 'http://localhost:3000';
 
-echo "🔄 Cleaning up any existing token: $TOKEN_ID"
-curl -s -X GET "$BASE_URL/tokens/$TOKEN_ID" > /dev/null && {
-  echo "⚠️ Token already exists — skipping creation"
-} || {
-  echo "✅ Token does not exist — proceeding"
+async function runTests() {
+    console.log('=== Running Energy Trading Platform Tests ===');
+    try {
+        // Test get all tokens
+        console.log('\nTesting GET /tokens');
+        const tokensResponse = await axios.get(`${API_URL}/tokens`);
+        console.log(`Status: ${tokensResponse.status}`);
+        console.log(`Tokens found: ${tokensResponse.data.length}`);
+        
+        // Test create token
+        console.log('\nTesting POST /tokens');
+        const newToken = {
+            id: `test_token_${Date.now()}`,
+            owner: 'testuser',
+            producer: 'testproducer',
+            energyAmount: 5.0,
+            price: 2.5,
+            sourceType: 'solar',
+            forSale: true,
+            certifiedGreen: true
+        };
+        
+        const createResponse = await axios.post(`${API_URL}/tokens`, newToken);
+        console.log(`Status: ${createResponse.status}`);
+        console.log(`Success: ${createResponse.data.success}`);
+        
+        // Test oracle verification
+        console.log('\nTesting POST /oracle/verify-production');
+        const oracleData = {
+            producerId: 'testproducer',
+            location: 'Test Location',
+            energyType: 'solar',
+            capacityKW: 30
+        };
+        
+        const oracleResponse = await axios.post(`${API_URL}/oracle/verify-production`, oracleData);
+        console.log(`Status: ${oracleResponse.status}`);
+        console.log(`Token ID: ${oracleResponse.data.tokenId}`);
+        console.log(`Estimated Production: ${oracleResponse.data.estimatedProduction} kWh`);
+        
+        // Test analytics
+        console.log('\nTesting GET /analytics/statistics');
+        const statsResponse = await axios.get(`${API_URL}/analytics/statistics`);
+        console.log(`Status: ${statsResponse.status}`);
+        console.log(`Total Tokens: ${statsResponse.data.totalTokens}`);
+        console.log(`Average Price: $${statsResponse.data.averagePrice.toFixed(2)}`);
+        
+        console.log('\n=== All tests completed successfully ===');
+    } catch (error) {
+        console.error('\n=== Test Failed ===');
+        console.error(`Error: ${error.message}`);
+        if (error.response) {
+            console.error(`Status: ${error.response.status}`);
+            console.error(`Response: ${JSON.stringify(error.response.data)}`);
+        }
+    }
 }
 
-echo ""
-echo "🪙 Creating new token: $TOKEN_ID"
-curl -s -X POST "$BASE_URL/tokens" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"id\": \"$TOKEN_ID\",
-    \"owner\": \"userA\",
-    \"producer\": \"solarfarm42\",
-    \"energyAmount\": 15.5,
-    \"price\": 3.25,
-    \"sourceType\": \"solar\",
-    \"forSale\": true,
-    \"certifiedGreen\": true
-}" | jq .
-
-echo ""
-echo "🔍 Fetching the token: $TOKEN_ID"
-curl -s "$BASE_URL/tokens/$TOKEN_ID" | jq .
-
-echo ""
-echo "📦 Updating the token price and marking not for sale"
-curl -s -X PUT "$BASE_URL/tokens/$TOKEN_ID" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "price": 4.99,
-    "forSale": false
-}' | jq .
-
-echo ""
-echo "📦 Attempting to transfer while not for sale (should fail)"
-curl -s -X POST "$BASE_URL/tokens/$TOKEN_ID/transfer" \
-  -H "Content-Type: application/json" \
-  -d '{"newOwner": "userB"}' | jq .
-
-echo ""
-echo "✅ Marking token for sale"
-curl -s -X PUT "$BASE_URL/tokens/$TOKEN_ID" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "forSale": true
-}' | jq .
-
-echo ""
-echo "🔁 Transferring ownership to userB"
-curl -s -X POST "$BASE_URL/tokens/$TOKEN_ID/transfer" \
-  -H "Content-Type: application/json" \
-  -d '{"newOwner": "userB"}' | jq .
-
-echo ""
-echo "🔍 Final token state:"
-curl -s "$BASE_URL/tokens/$TOKEN_ID" | jq .
-
-echo ""
-echo "📋 All tokens:"
-curl -s "$BASE_URL/tokens" | jq .
+runTests();

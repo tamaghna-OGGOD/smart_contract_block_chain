@@ -79,4 +79,24 @@ router.post("/:id/transfer", async (req, res) => {
     }
 });
 
+// New endpoint for applying tariff rules
+router.post("/:id/apply-tariff", async (req, res) => {
+    try {
+        const result = await invoke("ApplyTariffRules", [req.params.id]);
+        res.json({ success: true, result });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET owner's tokens
+router.get("/owner/:ownerId", async (req, res) => {
+    try {
+        const result = await query("GetTokensByOwner", [req.params.ownerId]);
+        res.json(JSON.parse(result));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;
