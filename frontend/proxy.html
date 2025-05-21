@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Energy Trading Platform</title>
+    <style>
+        :root {
+            --primary: #2a9d8f;
+            --secondary: #e9c46a;
+            --dark: #264653;
+            --danger: #e76f51;
+            --success: #43aa8b;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #d9b85b;
+        }
+
+        .btn-secondary:disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--dark);
+        }
+
+        .token-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .token-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .token-item:last-child {
+            border-bottom: none;
+        }
+
+        .token-source {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .source-solar {
+            background-color: #ffd166;
+            color: #333;
+        }
+
+        .source-wind {
+            background-color: #06d6a0;
+            color: white;
+        }
+
+        .source-hydro {
+            background-color: #118ab2;
+            color: white;
+        }
+
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .token-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .token-header {
+            background-color: var(--dark);
+            color: white;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+
+        .token-body {
+            padding: 15px;
+        }
+
+        .token-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .token-footer {
+            padding: 15px;
+            text-align: right;
+            border-top: 1px solid var(--border);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .system-diagram {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .diagram-box {
+            display: inline-block;
+            width: 180px;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .producers {
+            background-color: #8ecae6;
+            color: #333;
+        }
+
+        .blockchain {
+            background-color: #219ebc;
+        }
+
+        .consumers {
+            background-color: #fb8500;
+        }
+
+        .arrow {
+            display: inline-block;
+            width: 50px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            font-style: italic;
+            color: #666;
+        }
+
+        .loading-indicator::before {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        select,
+        input {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            width: 250px;
+        }
+
+        label {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .transaction-history {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .transaction-time {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .transaction-id {
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 70px;
+            background-color: var(--primary);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            text-align: center;
+            width: 70px;
+        }
+
+        .blockchain-details {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .block {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: white;
+        }
+
+        .block-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .block-body {
+            padding-left: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .token-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .diagram-box {
+                width: calc(100% - 20px);
+                margin: 10px 0;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+                height: 40px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">Energy Chain ⚡ Trading Platform</div>
+            <div>
+                <button class="btn btn-secondary" id="connect-wallet-btn">Connect Wallet</button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" id="tab-architecture">Architecture</div>
+            <div class="tab" id="tab-marketplace">Marketplace</div>
+            <div class="tab" id="tab-meters">Smart Meters</div>
+            <div class="tab" id="tab-analytics">Analytics</div>
+            <div class="tab" id="tab-blockchain">Blockchain</div>
+        </div>
+
+        <!-- Architecture Section -->
+        <div id="section-architecture">
+            <div class="card">
+                <div class="card-header">System Architecture</div>
+                <div class="card-content">
+                    <div class="system-diagram">
+                        <div class="diagram-box producers">Energy Producers</div>
+                        <span class="arrow">→</span>
+                        <div class="diagram-box blockchain">Hyperledger Fabric</div>
+                        <span class="arrow">→</span>
+                        <div class="diagram-box consumers">Energy Consumers</div>
+                    </div>
+                    <p>
+                        This high-level architecture diagram shows how energy producers, consumers, and validators
+                        interact through the blockchain network. Smart meters capture production and consumption data,
+                        which is recorded
+                        on the Hyperledger Fabric blockchain using smart contracts. Validators use a Proof of Authority
+                        consensus mechanism to verify transactions, while oracles provide external data verification.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Smart Contracts & Business Logic</div>
+                <div class="card-content">
+                    <h4>Key Smart Contract Functions</h4>
+                    <ul>
+                        <li><strong>CreateToken</strong>: Issues new energy tokens based on verified production</li>
+                        <li><strong>TransferToken</strong>: Transfers token ownership between accounts</li>
+                        <li><strong>GetAllTokens</strong>: Retrieves all tokens from the ledger</li>
+                        <li><strong>ReadToken</strong>: Retrieves a specific token's details</li>
+                    </ul>
+
+                    <h4 style="margin-top: 20px;">Technical Implementation</h4>
+                    <p>
+                        The smart contracts are implemented using chaincode in Go language and deployed on the
+                        Hyperledger Fabric network.
+                        Each energy token is stored as a JSON document in the world state database with the following
+                        structure:
+                    </p>
+                    <pre
+                        style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-top: 10px; overflow-x: auto;">
+{
+  "id": "token123",
+  "owner": "user456",
+  "producer": "SolarFarm001",
+  "energyAmount": 5.2,
+  "price": 2.1,
+  "sourceType": "solar",
+  "forSale": true,
+  "certifiedGreen": true,
+  "timestamp": "2025-05-20T14:25:30Z",
+  "meterReading": {
+    "meterId": "meter001",
+    "readingValue": 5.2,
+    "readingTimestamp": "2025-05-20T14:20:00Z"
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marketplace Section -->
+        <div id="section-marketplace" style="display: none;">
+            <div class="card">
+                <div class="card-header">Energy Token Marketplace</div>
+                <div class="card-content">
+                    <p>Browse available energy tokens from various producers:</p>
+
+                    <div class="token-grid">
+                        <!-- Tokens will be loaded here dynamically -->
+                        <div class="loading-indicator">Loading tokens...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Create Energy Token</div>
+                <div class="card-content">
+                    <form id="create-token-form">
+                        <div class="form-group">
+                            <label for="token-id">Token ID</label>
+                            <input type="text" id="token-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="token-owner">Owner</label>
+                            <input type="text" id="token-owner" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="token-producer">Producer</label>
+                            <input type="text" id="token-producer" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="token-energy">Energy Amount (kWh)</label>
+                            <input type="number" id="token-energy" min="0.1" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="token-price">Price (USD)</label>
+                            <input type="number" id="token-price" min="0.1" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="token-source">Energy Source</label>
+                            <select id="token-source" required>
+                                <option value="solar">Solar</option>
+                                <option value="wind">Wind</option>
+                                <option value="hydro">Hydro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="token-forsale" checked>
+                                Available for Sale
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="token-green" checked>
+                                Certified Green Energy
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Create Token</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Recent Marketplace Transactions</div>
+                <div class="card-content">
+                    <div class="transaction-history" id="marketplace-transactions">
+                        <!-- Transactions will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smart Meters Section -->
+        <div id="section-meters" style="display: none;">
+            <div class="card">
+                <div class="card-header">Smart Meter Simulation</div>
+                <div class="card-content">
+                    <p>Connect to smart meters and generate energy production readings:</p>
+
+                    <div style="margin-top: 20px;">
+                        <label for="meter-select">Select Smart Meter:</label>
+                        <select id="meter-select" style="margin-left: 10px; padding: 5px;">
+                            <option value="">Loading meters...</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-secondary" id="generate-reading-btn">Generate Reading</button>
+                        <button class="btn btn-secondary" style="margin-left: 10px;" id="verify-create-btn">Verify &
+                            Create Token</button>
+                    </div>
+
+                    <h4 style="margin-top: 20px;">Recent Readings</h4>
+                    <div class="token-list" id="readings-list">
+                        <!-- Readings will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Meter Specifications</div>
+                <div class="card-content" id="meter-specifications">
+                    <p>Select a meter to view specifications</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="section-analytics" style="display: none;">
+            <div class="card">
+                <div class="card-header">Energy Production Analytics</div>
+                <div class="card-content">
+                    <div class="loading-indicator">Loading analytics...</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Energy Production by Source</div>
+                <div class="card-content">
+                    <div class="chart-container" id="source-chart">
+                        <!-- Chart bars will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blockchain Section -->
+        <div id="section-blockchain" style="display: none;">
+            <div class="card">
+                <div class="card-header">Blockchain Explorer</div>
+                <div class="card-content">
+                    <p>Explore the latest blocks recorded on the energy trading blockchain:</p>
+                    <div class="blockchain-details" id="blockchain-explorer">
+                        <div class="loading-indicator">Loading blockchain data...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated database
+        const simulatedDB = {
+            tokens: [
+                {
+                    id: "TK001",
+                    owner: "Producer-A",
+                    producer: "SolarFarm Idaho",
+                    energyAmount: 5.2,
+                    price: 2.1,
+                    sourceType: "solar",
+                    forSale: true,
+                    certifiedGreen: true,
+                    timestamp: "2025-05-19T14:25:30Z"
+                },
+                {
+                    id: "TK002",
+                    owner: "Producer-B",
+                    producer: "WindFarm Texas",
+                    energyAmount: 3.7,
+                    price: 1.8,
+                    sourceType: "wind",
+                    forSale: true,
+                    certifiedGreen: true,
+                    timestamp: "2025-05-19T16:42:10Z"
+                },
+                {
+                    id: "TK003",
+                    owner: "Producer-C",
+                    producer: "HydroPlant Oregon",
+                    energyAmount: 8.5,
+                    price: 3.2,
+                    sourceType: "hydro",
+                    forSale: true,
+                    certifiedGreen: true,
+                    timestamp: "2025-05-20T09:15:45Z"
+                },
+                {
+                    id: "TK004",
+                    owner: "Consumer-X",
+                    producer: "SolarFarm Arizona",
+                    energyAmount: 2.4,
+                    price: 1.9,
+                    sourceType: "solar",
+                    forSale: false,
+                    certifiedGreen: true,
+                    timestamp: "2025-05-18T11:30:22Z"
+                }
+            ],
+            meters: [
+                { id: 'solar-farm-001', location: 'California', type: 'solar', capacity: 50, efficiency: 87.5, lastReading: "4.8 kWh", lastMaintenance: "2025-05-01" },
+                { id: 'wind-farm-001', location: 'Texas', type: 'wind', capacity: 30, efficiency: 92.3, lastReading: "3.2 kWh", lastMaintenance: "2025-04-15" },
+                { id: 'solar-farm-002', location: 'Arizona', type: 'solar', capacity: 40, efficiency: 85.1, lastReading: "3.9 kWh", lastMaintenance: "2025-05-10" },
+                { id: 'hydro-plant-001', location: 'Oregon', type: 'hydro', capacity: 65, efficiency: 95.7, lastReading: "7.8 kWh", lastMaintenance: "2025-03-22" }
+            ],
+            readings: [],
+            transactions: [],
+            blocks: [
+                {
+                    blockNumber: 1024,
+                    hash: "0x8f24b3ab4f7d63b9c0c490f1c7214fbeba98e391af07bc74d5c41a2881c686a4",
+                    timestamp: "2025-05-20T12:34:56Z",
+                    transactions: ["tx001", "tx002", "tx003"],
+                    prevHash: "0x7b52c395292b1e30d3e8f7200a497dc44c0ad13feff0fe6ee42e84419580ca74"
+                },
+                {
+                    blockNumber: 1023,
+                    hash: "0x7b52c395292b1e30d3e8f7200a497dc44c0ad13feff0fe6ee42e84419580ca74",
+                    timestamp: "2025-05-20T12:29:21Z",
+                    transactions: ["tx004", "tx005"],
+                    prevHash: "0x3f1ebbb9b27642a0cfdb5a9cabf86a9aef111dae15b97a25ca2ce6e5b5d5627a"
+                },
+                {
+                    blockNumber: 1022,
+                    hash: "0x3f1ebbb9b27642a0cfdb5a9cabf86a9aef111dae15b97a25ca2ce6e5b5d5627a",
+                    timestamp: "2025-05-20T12:24:47Z",
+                    transactions: ["tx006"],
+                    prevHash: "0x92f7d3a7c10e11be04e609ae283227ee2a2234ec81f786f1ce15705a7e830a68"
+                }
+            ]
+        };
+
+        // Simulated API
+        const API = {
+            getAllTokens() {
+                return new Promise(resolve => {
+                    // Simulate network delay
+                    setTimeout(() => {
+                        resolve([...simulatedDB.tokens]);
+                    }, 800);
+                });
+            },
+
+            createToken(tokenData) {
+                return new Promise((resolve) => {
+                    // Add timestamp
+                    tokenData.timestamp = new Date().toISOString();
+
+                    // Add to database
+                    simulatedDB.tokens.push(tokenData);
+
+                    // Add to transaction history
+                    simulatedDB.transactions.push({
+                        id: "tx" + Math.floor(Math.random() * 100000),
+                        type: "CREATE_TOKEN",
+                        tokenId: tokenData.id,
+                        from: tokenData.producer,
+                        to: tokenData.owner,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    // Add new block
+                    this.addNewBlockToChain("Create token: " + tokenData.id);
+
+                    setTimeout(() => {
+                        resolve(tokenData);
+                    }, 1000);
+                });
+            },
+
+            transferToken(tokenId, newOwner) {
+                return new Promise((resolve, reject) => {
+                    const tokenIndex = simulatedDB.tokens.findIndex(t => t.id === tokenId);
+
+                    if (tokenIndex === -1) {
+                        return reject(new Error("Token not found"));
+                    }
+
+                    // Update owner
+                    const oldOwner = simulatedDB.tokens[tokenIndex].owner;
+                    simulatedDB.tokens[tokenIndex].owner = newOwner;
+                    simulatedDB.tokens[tokenIndex].forSale = false;
+
+                    // Add to transaction history
+                    simulatedDB.transactions.push({
+                        id: "tx" + Math.floor(Math.random() * 100000),
+                        type: "TRANSFER_TOKEN",
+                        tokenId: tokenId,
+                        from: oldOwner,
+                        to: newOwner,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    // Add new block
+                    this.addNewBlockToChain("Transfer token: " + tokenId);
+
+                    setTimeout(() => {
+                        resolve(simulatedDB.tokens[tokenIndex]);
+                    }, 1000);
+                });
+            },
+
+            getAllMeters() {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve([...simulatedDB.meters]);
+                    }, 800);
+                });
+            },
+
+            getMeterDetail(meterId) {
+                return new Promise((resolve, reject) => {
+                    const meter = simulatedDB.meters.find(m => m.id === meterId);
+                    if (!meter) {
+                        return reject(new Error("Meter not found"));
+                    }
+                    setTimeout(() => {
+                        resolve(meter);
+                    }, 500);
+                });
+            },
+
+            generateMeterReading(meterId) {
+                return new Promise((resolve, reject) => {
+                    const meter = simulatedDB.meters.find(m => m.id === meterId);
+                    if (!meter) {
+                        return reject(new Error("Meter not found"));
+                    }
+
+                    // Generate random reading based on meter type
+                    let energyKWh;
+                    if (meter.type === 'solar') {
+                        energyKWh = (Math.random() * 4 + 2).toFixed(1);
+                    } else if (meter.type === 'wind') {
+                        energyKWh = (Math.random() * 3 + 1.5).toFixed(1);
+                    } else {
+                        energyKWh = (Math.random() * 5 + 3).toFixed(1);
+                    }
+
+                    const reading = {
+                        meterId: meterId,
+                        energyKWh: energyKWh,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    // Update meter last reading
+                    const meterIndex = simulatedDB.meters.findIndex(m => m.id === meterId);
+                    simulatedDB.meters[meterIndex].lastReading = energyKWh + " kWh";
+
+                    // Add to readings history
+                    simulatedDB.readings.push(reading);
+
+                    setTimeout(() => {
+                        resolve(reading);
+                    }, 800);
+                });
+            },
+
+            verifyMeterReading(meterId) {
+                return new Promise((resolve, reject) => {
+                    const readings = simulatedDB.readings.filter(r => r.meterId === meterId);
+                    if (readings.length === 0) {
+                        return reject(new Error("No readings found for this meter"));
+                    }
+
+                    const latestReading = readings[readings.length - 1];
+                    const meter = simulatedDB.meters.find(m => m.id === meterId);
+
+                    // Create a new token from the verified reading
+                    const tokenId = "TK" + (simulatedDB.tokens.length + 1).toString().padStart(3, '0');
+                    const newToken = {
+                        id: tokenId,
+                        owner: "Producer-" + String.fromCharCode(65 + Math.floor(Math.random() * 5)),
+                        producer: meter.type.charAt(0).toUpperCase() + meter.type.slice(1) + " Farm " + meter.location,
+                        energyAmount: parseFloat(latestReading.energyKWh),
+                        price: (parseFloat(latestReading.energyKWh) * 0.4 + 0.5).toFixed(1),
+                        sourceType: meter.type,
+                        forSale: true,
+                        certifiedGreen: true,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    // Add to tokens
+                    simulatedDB.tokens.push(newToken);
+
+                    // Add to transaction history
+                    simulatedDB.transactions.push({
+                        id: "tx" + Math.floor(Math.random() * 100000),
+                        type: "VERIFY_READING",
+                        tokenId: tokenId,
+                        from: meterId,
+                        to: newToken.owner,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    // Add new block
+                    this.addNewBlockToChain("Verify reading: " + meterId);
+
+                    setTimeout(() => {
+                        resolve({
+                            tokenId: tokenId,
+                            energy: latestReading.energyKWh,
+                            meterId: meterId,
+                            success: true
+                        });
+                    }, 1200);
+                });
+            },
+
+            getTokenStatistics() {
+                return new Promise(resolve => {
+                    // Calculate statistics from tokens
+                    const tokens = simulatedDB.tokens;
+                    const tokensForSale = tokens.filter(t => t.forSale).length;
+                    const totalEnergy = tokens.reduce((sum, t) => sum + t.energyAmount, 0);
+                    const prices = tokens.map(t => t.price);
+                    const averagePrice = prices.reduce((sum, p) => sum + p, 0) / prices.length;
+
+                    // Group by source
+                    const energyBySource = {
+                        solar: 0,
+                        wind: 0,
+                        hydro: 0
+                    };
+
+                    tokens.forEach(token => {
+                        energyBySource[token.sourceType] += token.energyAmount;
+                    });
+
+                    setTimeout(() => {
+                        resolve({
+                            totalTokens: tokens.length,
+                            tokensForSale: tokensForSale,
+                            totalEnergy: totalEnergy,
+                            averagePrice: averagePrice,
+                            energyBySource: energyBySource
+                        });
+                    }, 1000);
+                });
+            },
+
+            getRecentTransactions() {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve([...simulatedDB.transactions].reverse().slice(0, 5));
+                    }, 800);
+                });
+            },
+
+            getBlockchainData() {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve([...simulatedDB.blocks]);
+                    }, 1000);
+                });
+            },
+
+            addNewBlockToChain(transactionInfo) {
+                const latestBlock = simulatedDB.blocks[0];
+                const newBlock = {
+                    blockNumber: latestBlock.blockNumber + 1,
+                    hash: "0x" + Math.random().toString(16).substr(2, 64),
+                    timestamp: new Date().toISOString(),
+                    transactions: ["tx" + Math.floor(Math.random() * 100000)],
+                    prevHash: latestBlock.hash
+                };
+                // Add to beginning of array (latest first)
+                simulatedDB.blocks.unshift(newBlock);
+                return newBlock;
+            }
+        };
+
+        // Application logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = {
+                'tab-architecture': document.getElementById('section-architecture'),
+                'tab-marketplace': document.getElementById('section-marketplace'),
+                'tab-meters': document.getElementById('section-meters'),
+                'tab-analytics': document.getElementById('section-analytics'),
+                'tab-blockchain': document.getElementById('section-blockchain')
+            };
+
+            // Show error message function
+            function showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+
+                // Remove any existing error messages
+                document.querySelectorAll('.error-message').forEach(el => el.remove());
+
+                document.querySelector('.app-container').prepend(errorDiv);
+
+                // Auto-remove after 5 seconds
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+
+            // Handle tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Hide all sections
+                    Object.values(sections).forEach(section => {
+                        if (section) section.style.display = 'none';
+                    });
+
+                    // Show the selected section
+                    const sectionId = this.id.replace('tab-', 'section-');
+                    const section = document.getElementById(sectionId);
+                    if (section) section.style.display = 'block';
+
+                    // Load data for the selected tab
+                    if (sectionId === 'section-marketplace') {
+                        loadMarketplaceTokens();
+                        loadTransactionHistory();
+                    } else if (sectionId === 'section-meters') {
+                        loadSmartMeters();
+                    } else if (sectionId === 'section-analytics') {
+                        loadAnalytics();
+                    } else if (sectionId === 'section-blockchain') {
+                        loadBlockchainData();
+                    }
+                });
+            });
+
+            // Connect Wallet Button
+            const connectWalletBtn = document.getElementById('connect-wallet-btn');
+            connectWalletBtn.addEventListener('click', function () {
+                // Simulate wallet connection
+                this.disabled = true;
+                this.textContent = 'Connecting...';
+
+                setTimeout(() => {
+                    this.textContent = 'Wallet Connected';
+                    this.style.backgroundColor = '#43aa8b';
+                    this.style.color = 'white';
+
+                    // Show alert with wallet info
+                    alert('Wallet connected successfully!\n\nAddress: 0x7c2b13a1e2df7c8eac56b0c92d11a85d69b850e4\nNetwork: Energy Chain Testnet\nBalance: 120 EWAT (Energy Web Asset Tokens)');
+                }, 1500);
+            });
+
+            // MARKETPLACE FUNCTIONALITY
+            const marketplaceTokenGrid = document.querySelector('#section-marketplace .token-grid');
+            const transactionsList = document.getElementById('marketplace-transactions');
+
+            // Function to load tokens from the API
+            async function loadMarketplaceTokens() {
+                try {
+                    // Clear existing tokens
+                    marketplaceTokenGrid.innerHTML = '<div class="loading-indicator">Loading tokens...</div>';
+
+                    // Fetch tokens from API
+                    const tokens = await API.getAllTokens();
+
+                    // Clear loading indicator
+                    marketplaceTokenGrid.innerHTML = '';
+
+                    if (tokens.length === 0) {
+                        marketplaceTokenGrid.innerHTML = '<p>No tokens available for sale at the moment.</p>';
+                        return;
+                    }
+
+                    // Add each token to the grid
+                    tokens.forEach(token => {
+                        const tokenCard = createTokenCard(token);
+                        marketplaceTokenGrid.appendChild(tokenCard);
+                    });
+
+                    // Add purchase functionality to each token
+                    addPurchaseEventListeners();
+                } catch (error) {
+                    console.error('Error loading marketplace tokens:', error);
+                    marketplaceTokenGrid.innerHTML = '<p>Error loading tokens. Please try again later.</p>';
+                    showError('Failed to load marketplace tokens: ' + error.message);
+                }
+            }
+
+            // Function to load transaction history
+            async function loadTransactionHistory() {
+                try {
+                    transactionsList.innerHTML = '<div class="loading-indicator">Loading transactions...</div>';
+
+                    const transactions = await API.getRecentTransactions();
+
+                    transactionsList.innerHTML = '';
+
+                    if (transactions.length === 0) {
+                        transactionsList.innerHTML = '<p>No transactions yet.</p>';
+                        return;
+                    }
+
+                    transactions.forEach(tx => {
+                        const txItem = document.createElement('div');
+                        txItem.className = 'transaction-item';
+
+                        let actionText;
+                        if (tx.type === 'CREATE_TOKEN') {
+                            actionText = `Created token <span class="transaction-id">${tx.tokenId}</span> by ${tx.from}`;
+                        } else if (tx.type === 'TRANSFER_TOKEN') {
+                            actionText = `Transferred token <span class="transaction-id">${tx.tokenId}</span> from ${tx.from} to ${tx.to}`;
+                        } else {
+                            actionText = `Verified reading from meter <span class="transaction-id">${tx.from}</span> and created token <span class="transaction-id">${tx.tokenId}</span>`;
+                        }
+
+                        const txTime = new Date(tx.timestamp).toLocaleString();
+
+                        txItem.innerHTML = `
+                            <div>${actionText}</div>
+                            <div class="transaction-time">Transaction ID: ${tx.id} - ${txTime}</div>
+                        `;
+
+                        transactionsList.appendChild(txItem);
+                    });
+                } catch (error) {
+                    console.error('Error loading transactions:', error);
+                    transactionsList.innerHTML = '<p>Error loading transactions.</p>';
+                }
+            }
+
+            function createTokenCard(token) {
+                const tokenCard = document.createElement('div');
+                tokenCard.className = 'token-card';
+                tokenCard.dataset.tokenId = token.id;
+
+                let sourceClass = 'source-solar';
+                if (token.sourceType === 'wind') {
+                    sourceClass = 'source-wind';
+                } else if (token.sourceType === 'hydro') {
+                    sourceClass = 'source-hydro';
+                }
+
+                tokenCard.innerHTML = `
+                    <div class="token-header">Token #${token.id}</div>
+                    <div class="token-body">
+                        <div class="token-detail">
+                            <span>Energy:</span>
+                            <span>${token.energyAmount} kWh</span>
+                        </div>
+                        <div class="token-detail">
+                            <span>Source:</span>
+                            <span class="token-source ${sourceClass}">${token.sourceType}</span>
+                        </div>
+                        <div class="token-detail">
+                            <span>Producer:</span>
+                            <span>${token.producer}</span>
+                        </div>
+                        <div class="token-detail">
+                            <span>Price:</span>
+                            <span>$${token.price.toFixed(2)}</span>
+                        </div>
+                        <div class="token-detail">
+                            <span>Green Certified:</span>
+                            <span>${token.certifiedGreen ? 'Yes' : 'No'}</span>
+                        </div>
+                    </div>
+                    <div class="token-footer">
+                        ${token.forSale ?
+                        `<button class="btn btn-secondary">Purchase Token</button>` :
+                        `<button class="btn btn-secondary" disabled>Not For Sale</button>`}
+                    </div>
+                `;
+
+                return tokenCard;
+            }
+
+            function addPurchaseEventListeners() {
+                const purchaseButtons = document.querySelectorAll('.token-footer .btn:not([disabled])');
+                purchaseButtons.forEach(button => {
+                    button.addEventListener('click', async function () {
+                        const tokenCard = this.closest('.token-card');
+                        const tokenId = tokenCard.dataset.tokenId;
+
+                        // Disable button during transaction
+                        this.disabled = true;
+                        this.textContent = 'Processing...';
+
+                        try {
+                            // Call the API to transfer the token
+                            await API.transferToken(tokenId, 'Consumer-' + String.fromCharCode(88 + Math.floor(Math.random() * 3)));
+
+                            // Update button state on success
+                            this.textContent = 'Purchased';
+                            this.style.backgroundColor = '#43aa8b';
+                            this.style.color = 'white';
+
+                            alert(`Token ${tokenId} purchased successfully!`);
+
+                            // Reload tokens and transactions to show updated state
+                            loadMarketplaceTokens();
+                            loadTransactionHistory();
+                        } catch (error) {
+                            // Re-enable button on failure
+                            this.disabled = false;
+                            this.textContent = 'Purchase Token';
+
+                            showError(`Failed to purchase token: ${error.message}`);
+                        }
+                    });
+                });
+            }
+
+            // Create token form
+            const createTokenForm = document.getElementById('create-token-form');
+            createTokenForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating...';
+
+                try {
+                    const tokenData = {
+                        id: document.getElementById('token-id').value,
+                        owner: document.getElementById('token-owner').value,
+                        producer: document.getElementById('token-producer').value,
+                        energyAmount: parseFloat(document.getElementById('token-energy').value),
+                        price: parseFloat(document.getElementById('token-price').value),
+                        sourceType: document.getElementById('token-source').value,
+                        forSale: document.getElementById('token-forsale').checked,
+                        certifiedGreen: document.getElementById('token-green').checked
+                    };
+
+                    await API.createToken(tokenData);
+                    alert('Token created successfully!');
+
+                    // Reset form
+                    createTokenForm.reset();
+
+                    // Generate a new token ID suggestion
+                    document.getElementById('token-id').value = 'TK' + (Math.floor(Math.random() * 900) + 100);
+
+                    // Reload marketplace and transactions
+                    loadMarketplaceTokens();
+                    loadTransactionHistory();
+                } catch (error) {
+                    showError(`Failed to create token: ${error.message}`);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Token';
+                }
+            });
+
+            // Auto-fill the token form with sample data
+            function fillSampleTokenData() {
+                document.getElementById('token-id').value = 'TK' + (Math.floor(Math.random() * 900) + 100);
+                document.getElementById('token-owner').value = 'Producer-' + String.fromCharCode(65 + Math.floor(Math.random() * 5));
+                document.getElementById('token-producer').value = 'Solar Farm Nevada';
+                document.getElementById('token-energy').value = (Math.random() * 5 + 1).toFixed(1);
+                document.getElementById('token-price').value = (Math.random() * 2 + 1).toFixed(2);
+            }
+
+            // SMART METERS FUNCTIONALITY
+            const metersSection = document.getElementById('section-meters');
+            const meterSelect = document.getElementById('meter-select');
+            const readingsList = document.getElementById('readings-list');
+            const meterSpecifications = document.getElementById('meter-specifications');
+            const generateReadingBtn = document.getElementById('generate-reading-btn');
+            const verifyCreateBtn = document.getElementById('verify-create-btn');
+
+            // Function to load smart meters
+            async function loadSmartMeters() {
+                try {
+                    // Clear existing meters
+                    meterSelect.innerHTML = '<option value="">Loading meters...</option>';
+
+                    // Fetch meters from API
+                    const meters = await API.getAllMeters();
+
+                    // Clear loading option
+                    meterSelect.innerHTML = '';
+
+                    if (meters.length === 0) {
+                        meterSelect.innerHTML = '<option value="">No meters available</option>';
+                        return;
+                    }
+
+                    // Add placeholder option
+                    meterSelect.innerHTML = '<option value="">Select a meter</option>';
+
+                    // Add each meter to the select
+                    meters.forEach(meter => {
+                        const option = document.createElement('option');
+                        option.value = meter.id;
+                        option.textContent = `${meter.id} (${meter.type} - ${meter.location})`;
+                        meterSelect.appendChild(option);
+                    });
+
+                    // Clear meter specifications
+                    meterSpecifications.innerHTML = '<p>Select a meter to view specifications</p>';
+
+                    // Add event listener to meter select
+                    meterSelect.addEventListener('change', async function () {
+                        if (!this.value) {
+                            meterSpecifications.innerHTML = '<p>Select a meter to view specifications</p>';
+                            return;
+                        }
+
+                        try {
+                            const meter = await API.getMeterDetail(this.value);
+                            meterSpecifications.innerHTML = `
+                                <div style="display: flex; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 200px; margin-right: 20px;">
+                                        <h4>General Information</h4>
+                                        <p><strong>ID:</strong> ${meter.id}</p>
+                                        <p><strong>Location:</strong> ${meter.location}</p>
+                                        <p><strong>Type:</strong> ${meter.type.charAt(0).toUpperCase() + meter.type.slice(1)}</p>
+                                        <p><strong>Last Maintenance:</strong> ${meter.lastMaintenance}</p>
+                                    </div>
+                                    <div style="flex: 1; min-width: 200px;">
+                                        <h4>Technical Specifications</h4>
+                                        <p><strong>Capacity:</strong> ${meter.capacity} kW</p>
+                                        <p><strong>Efficiency:</strong> ${meter.efficiency}%</p>
+                                        <p><strong>Last Reading:</strong> ${meter.lastReading}</p>
+                                        <p><strong>Status:</strong> <span style="color: #43aa8b; font-weight: bold;">Online</span></p>
+                                    </div>
+                                </div>
+                            `;
+                        } catch (error) {
+                            meterSpecifications.innerHTML = '<p>Error loading meter specifications</p>';
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading smart meters:', error);
+                    meterSelect.innerHTML = '<option value="">Error loading meters</option>';
+                    showError('Failed to load smart meters: ' + error.message);
+                }
+            }
+
+            // Generate reading button
+            generateReadingBtn.addEventListener('click', async function () {
+                const meterId = meterSelect.value;
+                if (!meterId) {
+                    alert('Please select a meter first');
+                    return;
+                }
+
+                try {
+                    // Disable button during request
+                    this.disabled = true;
+                    this.textContent = 'Generating...';
+
+                    // Call API to generate reading
+                    const reading = await API.generateMeterReading(meterId);
+
+                    // Create a new reading element
+                    const readingElement = document.createElement('div');
+                    readingElement.className = 'token-item';
+                    readingElement.innerHTML = `
+                        <div>
+                            <strong>Energy:</strong> ${reading.energyKWh} kWh
+                            <span style="margin-left: 10px; color: #666;">(${meterId})</span>
+                        </div>
+                        <div>
+                            <small>${new Date(reading.timestamp).toLocaleString()}</small>
+                        </div>
+                    `;
+
+                    // Add the reading to the list
+                    readingsList.insertBefore(readingElement, readingsList.firstChild);
+
+                    alert(`Generated reading: ${reading.energyKWh} kWh from ${meterId}`);
+                } catch (error) {
+                    console.error('Error generating reading:', error);
+                    showError('Failed to generate reading: ' + error.message);
+                } finally {
+                    // Re-enable button
+                    this.disabled = false;
+                    this.textContent = 'Generate Reading';
+                }
+            });
+
+            // Verify and create token button
+            verifyCreateBtn.addEventListener('click', async function () {
+                const meterId = meterSelect.value;
+                if (!meterId) {
+                    alert('Please select a meter first');
+                    return;
+                }
+
+                if (readingsList.children.length === 0) {
+                    alert('Please generate a reading first');
+                    return;
+                }
+
+                try {
+                    // Disable button during request
+                    this.disabled = true;
+                    this.textContent = 'Verifying...';
+
+                    // Call API to verify reading and create token
+                    const result = await API.verifyMeterReading(meterId);
+
+                    alert(`Reading verified and token created!\n\nToken ID: ${result.tokenId}\nEnergy: ${result.energy} kWh\nMeter: ${meterId}`);
+
+                    // Reload marketplace tokens to show the new token
+                    setTimeout(() => {
+                        alert('The new token has been added to the marketplace. Please check the Marketplace tab!');
+                    }, 500);
+                } catch (error) {
+                    console.error('Error verifying reading:', error);
+                    showError('Failed to verify reading: ' + error.message);
+                } finally {
+                    // Re-enable button
+                    this.disabled = false;
+                    this.textContent = 'Verify & Create Token';
+                }
+            });
+
+            // ANALYTICS FUNCTIONALITY
+            async function loadAnalytics() {
+                try {
+                    const analyticsSection = document.getElementById('section-analytics');
+                    const statsContainer = analyticsSection.querySelector('.card-content');
+                    const sourceChart = document.getElementById('source-chart');
+
+                    // Show loading indicator
+                    statsContainer.innerHTML = '<div class="loading-indicator">Loading analytics...</div>';
+                    sourceChart.innerHTML = '<div class="loading-indicator">Generating chart...</div>';
+
+                    // Fetch statistics from API
+                    const stats = await API.getTokenStatistics();
+
+                    // Update the stats UI
+                    statsContainer.innerHTML = `
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 5px; min-width: 150px;">
+                                <div>Total Production</div>
+                                <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">${stats.totalEnergy.toFixed(1)} kWh</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 5px; min-width: 150px;">
+                                <div>Active Tokens</div>
+                                <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">${stats.totalTokens}</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 5px; min-width: 150px;">
+                                <div>Tokens For Sale</div>
+                                <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">${stats.tokensForSale}</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex: 1; margin: 5px; min-width: 150px;">
+                                <div>Average Price</div>
+                                <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px;">$${stats.averagePrice.toFixed(2)}</div>
+                            </div>
+                        </div>
+                        
+                        <h4>Energy Production by Source</h4>
+                        <ul>
+                    `;
+
+                    // Add source distribution
+                    const sources = Object.entries(stats.energyBySource);
+                    const totalEnergy = sources.reduce((sum, [_, value]) => sum + value, 0);
+
+                    sources.forEach(([source, energy]) => {
+                        const percentage = ((energy / totalEnergy) * 100).toFixed(0);
+                        statsContainer.innerHTML += `<li>${source.charAt(0).toUpperCase() + source.slice(1)}: ${energy.toFixed(1)} kWh (${percentage}%)</li>`;
+                    });
+
+                    statsContainer.innerHTML += '</ul>';
+
+                    // Create the source chart
+                    sourceChart.innerHTML = '';
+
+                    // Define colors for each source
+                    const sourceColors = {
+                        'solar': '#ffd166',
+                        'wind': '#06d6a0',
+                        'hydro': '#118ab2'
+                    };
+
+                    // Find the maximum energy value for scaling
+                    const maxEnergy = Math.max(...sources.map(([_, value]) => value));
+
+                    // Create a bar for each source
+                    sources.forEach(([source, energy], index) => {
+                        const percentage = (energy / maxEnergy) * 100;
+                        const barHeight = (percentage * 250) / 100; // Scale to max height of 250px
+
+                        const bar = document.createElement('div');
+                        bar.className = 'chart-bar';
+                        bar.style.left = `${index * 100 + 50}px`;
+                        bar.style.height = '0'; // Start at 0 for animation
+                        bar.style.backgroundColor = sourceColors[source];
+
+                        const label = document.createElement('div');
+                        label.className = 'chart-label';
+                        label.textContent = source.charAt(0).toUpperCase() + source.slice(1);
+                        label.style.left = `${index * 100 + 50}px`;
+
+                        sourceChart.appendChild(bar);
+                        sourceChart.appendChild(label);
+
+                        // Animate the bar height
+                        setTimeout(() => {
+                            bar.style.height = `${barHeight}px`;
+                        }, 100 * index);
+                    });
+                } catch (error) {
+                    console.error('Error loading analytics:', error);
+                    document.getElementById('section-analytics').querySelector('.card-content').innerHTML = '<p>Error loading analytics. Please try again later.</p>';
+                    document.getElementById('source-chart').innerHTML = '<p>Error generating chart.</p>';
+                    showError('Failed to load analytics: ' + error.message);
+                }
+            }
+
+            // BLOCKCHAIN EXPLORER FUNCTIONALITY
+            async function loadBlockchainData() {
+                try {
+                    const blockchainExplorer = document.getElementById('blockchain-explorer');
+                    blockchainExplorer.innerHTML = '<div class="loading-indicator">Loading blockchain data...</div>';
+
+                    const blocks = await API.getBlockchainData();
+
+                    blockchainExplorer.innerHTML = '';
+
+                    blocks.forEach(block => {
+                        const blockDiv = document.createElement('div');
+                        blockDiv.className = 'block';
+
+                        blockDiv.innerHTML = `
+                            <div class="block-header">Block #${block.blockNumber}</div>
+                            <div class="block-body">
+                                <div>Hash: ${block.hash}</div>
+                                <div>Previous Hash: ${block.prevHash}</div>
+                                <div>Timestamp: ${new Date(block.timestamp).toLocaleString()}</div>
+                                <div>Transactions: ${block.transactions.join(', ')}</div>
+                            </div>
+                        `;
+
+                        blockchainExplorer.appendChild(blockDiv);
+                    });
+                } catch (error) {
+                    console.error('Error loading blockchain data:', error);
+                    blockchainExplorer.innerHTML = '<p>Error loading blockchain data. Please try again later.</p>';
+                    showError('Failed to load blockchain data: ' + error.message);
+                }
+            }
+
+            // Initialize form with sample data
+            fillSampleTokenData();
+
+            // Initially load the architecture section
+            // Marketplace data will be loaded when the tab is clicked
+        });
+    </script>
+</body>
+
+</html>

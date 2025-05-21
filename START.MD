@@ -1,7 +1,3 @@
-Absolutely — here’s a clean **project-level documentation** you can drop into `README.md` or use for onboarding.
-
----
-
 # ⚡ Energy Trading Fabric API – Setup & Usage Guide
 
 This project provides a Node.js backend API for interacting with a Hyperledger Fabric smart contract that manages energy tokens.
@@ -64,7 +60,7 @@ Then run:
 
 ```bash
 node enrollAdmin.js
-node registerUser.js
+node enrollUser.js
 ```
 
 This stores `admin` and `appUser` identities into the local `wallet/`.
